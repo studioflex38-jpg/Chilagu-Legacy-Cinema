@@ -1,46 +1,39 @@
-name: Build Chilagu APK - YA UHAKIKA
+name: Build Chilagu APK RAHISI
 
-on:
+on: 
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Toa code
         uses: actions/checkout@v4
-
-      - name: Unzip project
-        run: |
-          unzip "zip Chilagu Cinema.zip" -d .
-          rm "zip Chilagu Cinema.zip"
-
-      - name: Setup Java 11
+        
+      - name: Weka Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '11'
-
-      - name: Setup Flutter 3.19.6
+          java-version: '17'
+          
+      - name: Weka Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.6'
-          channel: 'stable'
-
-      - name: Fix Kotlin & Gradle ZOTE
+          flutter-version: '3.22.0'
+          
+      - name: Fungua zip yako
         run: |
-          flutter create .
-          sed -i "s/ext.kotlin_version = '.*'/ext.kotlin_version = '1.8.22'/g" android/build.gradle
-          sed -i "s/com.android.tools.build:gradle:.*/com.android.tools.build:gradle:8.1.0'/g" android/build.gradle
-
-      - name: Get dependencies
+          unzip "zip Chilagu Cinema.zip" -d .
+          rm "zip Chilagu Cinema.zip"
+          
+      - name: Pakua packages
         run: flutter pub get
-
-      - name: Build APK
-        run: flutter build apk --debug --no-shrink
-
-      - name: Upload APK
+        
+      - name: Jenga APK
+        run: flutter build apk --debug
+        
+      - name: Panda APK hapa
         uses: actions/upload-artifact@v4
         with:
-          name: Chilagu-Cinema-APK-YA-UHAKIKA
+          name: APK-RAHISI
           path: build/app/outputs/flutter-apk/app-debug.apk
