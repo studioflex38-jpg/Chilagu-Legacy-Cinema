@@ -14,8 +14,8 @@ jobs:
 
       - name: Unzip project
         run: |
-          unzip "zip Chilagu Cinema...zip" -d .
-          rm "zip Chilagu Cinema...zip"
+          unzip "zip Chilagu Cinema.zip" -d .
+          rm "zip Chilagu Cinema.zip"
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
