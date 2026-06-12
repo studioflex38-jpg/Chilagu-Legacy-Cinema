@@ -14,36 +14,29 @@ jobs:
 
       - name: Unzip project
         run: |
-          unzip "zip Chilagu Cinema.zip" -d temp
+          unzip "zip Chilagu Cinema.zip" -d .
           rm "zip Chilagu Cinema.zip"
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.0'
+          flutter-version: '3.24.0'
           channel: 'stable'
 
-      - name: Create Fresh Project & Fix Multidex
-        run: |
-          flutter create chilagu_new
-          cp -r temp/lib chilagu_new/
-          cp temp/pubspec.yaml chilagu_new/
-          cp -r temp/assets chilagu_new/ || true
-          
-          # HII NDIO SEHEMU MUHIMU - INAREKEBISHA GRADLE
-          sed -i 's/minSdkVersion.*/minSdkVersion 21/' chilagu_new/android/app/build.gradle
-          sed -i '/defaultConfig {/a \        multiDexEnabled true' chilagu_new/android/app/build.gradle
-          sed -i '/dependencies {/a \    implementation "androidx.multidex:multidex:2.0.1"' chilagu_new/android/app/build.gradle
+      - name: Get dependencies
+        run: flutter pub get
 
       - name: Build APK
-        run: |
-          cd chilagu_new
-          flutter clean
-          flutter pub get
-          flutter build apk --debug --verbose
+        run: flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Chilagu-Cinema-APK
-          path: chilagu_new/build/app/outputs/flutter-apk/app-debug.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
