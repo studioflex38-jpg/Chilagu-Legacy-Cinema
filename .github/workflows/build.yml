@@ -12,9 +12,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Unzip project
+      - name: Unzip old project
         run: |
-          unzip "zip Chilagu Cinema.zip" -d .
+          unzip "zip Chilagu Cinema.zip" -d old_project
           rm "zip Chilagu Cinema.zip"
 
       - name: Setup Java
@@ -29,14 +29,26 @@ jobs:
           flutter-version: '3.24.0'
           channel: 'stable'
 
+      - name: Create new Flutter project & move code
+        run: |
+          flutter create -t app chilagu_new
+          cp -r old_project/lib chilagu_new/
+          cp old_project/pubspec.yaml chilagu_new/
+          cp -r old_project/assets chilagu_new/ || true
+          cp -r old_project/fonts chilagu_new/ || true
+
       - name: Get dependencies
-        run: flutter pub get
+        run: |
+          cd chilagu_new
+          flutter pub get
 
       - name: Build APK
-        run: flutter build apk --release
+        run: |
+          cd chilagu_new
+          flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Chilagu-Cinema-APK
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: chilagu_new/build/app/outputs/flutter-apk/app-release.apk
