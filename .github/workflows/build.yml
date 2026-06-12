@@ -14,7 +14,7 @@ jobs:
 
       - name: Unzip project
         run: |
-          unzip "zip Chilagu Cinema.zip" -d .
+          unzip "zip Chilagu Cinema.zip" -d temp
           rm "zip Chilagu Cinema.zip"
 
       - name: Setup Flutter
@@ -23,16 +23,22 @@ jobs:
           flutter-version: '3.16.0'
           channel: 'stable'
 
-      - name: Fix Gradle Project
+      - name: Create Fresh Project
         run: |
-          flutter create --platforms=android .
-          flutter pub get
+          flutter create chilagu_new
+          cp -r temp/lib chilagu_new/
+          cp temp/pubspec.yaml chilagu_new/
+          cp -r temp/assets chilagu_new/ || true
+          cd chilagu_new
 
       - name: Build APK
-        run: flutter build apk --debug --no-shrink
+        run: |
+          cd chilagu_new
+          flutter pub get
+          flutter build apk --debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Chilagu-Cinema-APK
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          path: chilagu_new/build/app/outputs/flutter-apk/app-debug.apk
