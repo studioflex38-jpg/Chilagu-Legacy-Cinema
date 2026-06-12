@@ -23,19 +23,24 @@ jobs:
           flutter-version: '3.16.0'
           channel: 'stable'
 
-      - name: Create Fresh Project
+      - name: Create Fresh Project & Fix Multidex
         run: |
           flutter create chilagu_new
           cp -r temp/lib chilagu_new/
           cp temp/pubspec.yaml chilagu_new/
           cp -r temp/assets chilagu_new/ || true
-          echo "multiDexEnabled true" >> chilagu_new/android/app/build.gradle
+          
+          # HII NDIO SEHEMU MUHIMU - INAREKEBISHA GRADLE
+          sed -i 's/minSdkVersion.*/minSdkVersion 21/' chilagu_new/android/app/build.gradle
+          sed -i '/defaultConfig {/a \        multiDexEnabled true' chilagu_new/android/app/build.gradle
+          sed -i '/dependencies {/a \    implementation "androidx.multidex:multidex:2.0.1"' chilagu_new/android/app/build.gradle
 
       - name: Build APK
         run: |
           cd chilagu_new
+          flutter clean
           flutter pub get
-          flutter build apk --debug
+          flutter build apk --debug --verbose
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
